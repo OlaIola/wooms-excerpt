@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WooMS Excerpt (extension)
  * Description: Краткое описание товара в МойСклад в дополнительном поле сохраняется в excerpt товара
- * Plugin URI: https://wpcraft.ru/product/wooms-extra/?utm_source=admin-plugin-url-wooms-excerpt
+ * Plugin URI: https://wpcraft.ru/product/wooms/?utm_source=admin-plugin-url-wooms-excerpt
  * Author: WPCraft
  * Author URI: https://wpcraft.ru/
  * Developer: WPCraft
@@ -23,6 +23,8 @@
 namespace WooMS;
 
 defined( 'ABSPATH' ) || exit;
+
+include_once( __DIR__ . '/init.php' );
 
 /**
  * Add excerpt from custom field in MoySklad
@@ -62,7 +64,7 @@ class ProductExcerpt {
 
 				/**
 				 * Preventing Wooms XT (Extra) from saving field with a short description like product attribute 
-				 * in case where "Включить синхронизацию доп. полей как атрибутов" is checked
+				 * in case where "Включить синхронизацию доп. полей как атрибутов" (wooms_attr_enabled) is checked
 				 */
 				if ( get_option( 'wooms_excerpt_name' ) ) {
 
@@ -153,7 +155,7 @@ class ProductExcerpt {
 		/**
 		 * Get name of the field with custom excerpt
 		 */
-		$field_name = trim( get_option( 'wooms_excerpt_name' ) );
+		$field_name = get_option( 'wooms_excerpt_name' );
 
 		if ( $field_name ) {
 
@@ -214,7 +216,7 @@ class ProductExcerpt {
 	 */
 	public static function remove_short_description_from_product_attributes( $product_attributes, $product_id, $item ) {
 
-		$field_name = trim( get_option( 'wooms_excerpt_name' ) );
+		$field_name = get_option( 'wooms_excerpt_name' );
 
 		foreach ( $product_attributes as $slug => $attribute ) {
 

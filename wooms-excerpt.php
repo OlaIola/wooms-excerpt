@@ -2,20 +2,14 @@
 /**
  * Plugin Name: WooMS Excerpt (extension)
  * Description: Краткое описание товара в МойСклад в дополнительном поле сохраняется в excerpt товара
- * Plugin URI: https://wpcraft.ru/product/wooms/?utm_source=admin-plugin-url-wooms-excerpt
- * Author: WPCraft
- * Author URI: https://wpcraft.ru/
- * Developer: WPCraft
- * Developer URI: https://wpcraft.ru/
+ * Plugin URI: https://github.com/wpcraft-ru/wooms/issues/400
+ * Version: 1.0
+ * Author: OGlekler
+ * Author URI: https://github.com/OlaIola/
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: wooms-excerpt
- * Domain Path: /languages
- * WC requires at least: 3.6
- * WC tested up to: 5.1.0
- * WooMS requires at least: 2.0.5
- * WooMS tested up to: 8.1.0
- * Version: 8.1
+ * WooMS tested up to: 8.2.0
+ * Version: 1.0
  *
  * @package WooMS Excerpt
  */
@@ -23,8 +17,6 @@
 namespace WooMS;
 
 defined( 'ABSPATH' ) || exit;
-
-include_once( __DIR__ . '/init.php' );
 
 /**
  * Add excerpt from custom field in MoySklad
@@ -41,6 +33,9 @@ class ProductExcerpt {
 			function () {
 
 				if ( ! class_exists( 'WooMS_Core' ) ) {
+
+					add_action( 'after_plugin_row_' . plugin_basename( __FILE__ ), array( __CLASS__, 'plugin_row' ), 5, 3 );
+
 					return;
 				}
 
@@ -72,6 +67,46 @@ class ProductExcerpt {
 				}
 			}
 		);
+	}
+
+
+	/**
+	 * Wooms Excerpt: Wooms Check
+	 *
+	 * @param $plugin_file
+	 * @param $plugin_data
+	 * @param $status
+	 */
+	public static function plugin_row( $plugin_file, $plugin_data, $status ) {
+
+		$base_name = plugin_basename( $plugin_file );
+
+		// >= WP 5.5
+		$colspan = 4;
+
+		// < WP 5.5
+		if( version_compare( $GLOBALS['wp_version'], '5.5', '<' ) ) {
+			$colspan = 3;
+		}
+		?>
+
+		<style>
+			.plugins tr[data-plugin='<?php echo $base_name; ?>'] th,
+			.plugins tr[data-plugin='<?php echo $base_name; ?>'] td{
+				box-shadow:none;
+			}
+		</style>
+
+		<tr class="plugin-update-tr active">
+			<td colspan="<?php echo $colspan; ?>" class="plugin-update colspanchange">
+				<div class="update-message notice inline notice-error notice-alt">
+					<p><?php _e( 'WooMS Excerpt требуется <a href="https://wpcraft.ru/product/wooms/" target="_blank">Wooms</a> (minimum: 8.1).' ); ?></p>
+				</div>
+			</td>
+		</tr>
+
+		<?php
+
 	}
 
 	/**
